@@ -11,7 +11,7 @@ const genQueryBody = (layer) => {
     ];
 };
 
-const callQueryService = async (layer) => {
+export const callQueryService = async (layer) => {
     store.dispatch(systemShowLoading());
     return await query.queryFeatures(genQueryBody(layer)).then((res) => {
         return JSON.parse(res.data[0].features).features;

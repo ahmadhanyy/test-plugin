@@ -4,9 +4,9 @@ let VL = null;
 
 const validateVL = async (options) => {
     if (!VL) {
-        await apiRegistry.getApis(["VectoryLayer"]).then(([VectoryLayer]) => {
-            VL = new VectoryLayer();
-            actionsRegistry.dispatch("addVectoryLayer", VL);
+        await apiRegistry.getApis(["VectorLayer"]).then(([VectorLayer]) => {
+            VL = new VectorLayer();
+            actionsRegistry.dispatch("addVectorLayer", VL);
         });
     }
     else{
@@ -44,9 +44,9 @@ export const generateFeature = async (geoJSONFeature) => {
     });
 };
 
-export const drawFeatures = async (geoJSONFeature, options) => {
-    await validateVL(options.VectoryLayerOptions);
-    const features = await Promise.all(geoJSONFeature.map(generateFeature));
+export const drawFeatures = async (GEOJSONFeatures, options) => {
+    await validateVL(options.VectorLayerOptions);
+    const features = await Promise.all(GEOJSONFeatures.map(generateFeature));
     const style = await generateStyle(options.styleOptions);
     VL.setStyle(style);
     VL.addFeatures(features);
