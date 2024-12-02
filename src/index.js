@@ -5,6 +5,8 @@
 
 import MapClick from './components/MapClick/MapClick.component';
 import MapClickResult from './components/MapClickResult/MapClickResult.component';
+import FormButton from './components/FormButton';
+import FormComponent from './components/FormComponent';
 import defaultLocalization from './messages';
 import { LOCALIZATION_NAMESPACE } from './constants/constants';
 import testingPluginReducer from './reducers';
@@ -16,7 +18,9 @@ MapClick.Icon = LOCALIZATION_NAMESPACE + ":icon";
 
 const components = {
     MapClick,
-    MapClickResult
+    MapClickResult,
+    FormButton,
+    FormComponent,
 };
 
 const localization = {

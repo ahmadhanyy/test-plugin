@@ -2,41 +2,45 @@ import React from 'react';
 import { withLocalize, componentRegistry } from '@penta-b/ma-lib';
 import { LOCALIZATION_NAMESPACE } from '../../constants/constants';
 import { connect } from 'react-redux';
-//import { components } from '@penta-b/grid';
+import { components } from '@penta-b/grid';
 import { selectFeatures } from '../../selectors';
+import FormButton from '../FormButton';
 
-//const Grid = components.Grid;
-
-const ZoomToFeatureButton = componentRegistry.getComponent('ZoomToFeatureButton');
-const HighlightFeatureButton = componentRegistry.getComponent('HighlightFeatureButton');
-
-const trComponents = [
-    { component: ZoomToFeatureButton, settings: {} },
-    { component: HighlightFeatureButton, settings: {} },
-];
-
-const gridComponents = [
-    { component: ZoomToFeatureButton, settings: {} },
-    { component: HighlightFeatureButton, settings: {} },
-];
-
-//trComponents = { trComponents }
-//gridComponents = { gridComponents }
+const Grid = components.Grid;
 
 class MapClickResult extends React.Component {
     constructor(props) {
         super(props);
-        console.log(this.props.features);
     }
 
     render() {
         const { t, features} = this.props;
-        const featuresProps = features.map((f) => f.properties);
+        //const featuresProps = features.map((f) => f.properties);
+
+        const featuresPropsWithCo = features.map((f) => ({
+            ...f.properties,
+            geometry: f.geometry,
+        }));
+
+        const ZoomToFeatureButton = componentRegistry.getComponent('ZoomToFeatureButton');
+        const HighlightFeatureButton = componentRegistry.getComponent('HighlightFeatureButton');
+        const ClearHighlightButton = componentRegistry.getComponent('ClearHighlightButton');
+
+        const trComponents = [
+            { component: ZoomToFeatureButton, settings: {} },
+            { component: HighlightFeatureButton, settings: {} },
+            { component: ClearHighlightButton, settings: {} },
+        ];
+        const gridComponents = [
+            { component: ZoomToFeatureButton, settings: {} },
+            { component: HighlightFeatureButton, settings: {} },
+            { component: ClearHighlightButton, settings: {} },
+            { component: FormButton, settings: {LAYER: this.props.settings.dataSettings.ddd}},
+        ];
 
         return (
             <div>
-                Hello World
-                {/* <Grid
+                <Grid
                     settings={{
                         name: "buffer data",
                         rowIdentifier: "id",
@@ -72,9 +76,11 @@ class MapClickResult extends React.Component {
                                 sortable: false,
                             },
                         ],
-                        data: featuresProps,
+                        data: featuresPropsWithCo,
                     }}
-                /> */}
+                    trComponents = { trComponents }
+                    gridComponents = { gridComponents }
+                />
             </div>
         );
     }

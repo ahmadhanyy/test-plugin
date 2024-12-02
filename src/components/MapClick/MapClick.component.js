@@ -1,30 +1,38 @@
 import React from "react";
 import { connect } from "react-redux";
-import { selectorsRegistry, actionsRegistry } from "@penta-b/ma-lib";
+import { selectorsRegistry, actionsRegistry, systemAddNotification } from "@penta-b/ma-lib";
 import { callQueryService } from "../../services/queryService";
-import {  drawFeatures } from "../../services/mapUtils";
-import { setFeatures} from "../../actions/index";
+import { drawFeatures } from "../../services/mapUtils";
+import { setFeatures } from "../../actions/index";
 
 class MapClickComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.id = null;
+}
 
   componentDidUpdate(prevProps) {
     if (this.props.isActive && prevProps.isActive != this.props.isActive) {
       // Show the MapClickResult only if it hasn't been shown yet
-      this.props.showMapClickResult({}, (id) => {
-        this.id = id;  // Save the component ID to ensure it's shown once
-      });
+      this.props.showMapClickResult({}, 
+        (id) => {
+          this.id = id;  // Save the component ID to ensure it's shown once
+        },
+        () => {
+          this.id = null;  // Make ID null on removing the component
+        });
+      //console.log("ID when trigger is on: ", this.id);
     } 
     else if (!this.props.isActive && prevProps.isActive != this.props.isActive) {
       // Remove the MapClickResult only if it is already shown
       this.id && this.props.removeComponent(this.id);
+      this.id = null;
     }
   }
   
   componentDidMount() {
-    console.log("MapClickComponent mounted");
-    console.log(this.props.settings);
     const LAYER  = this.props.settings.dataSettings.ddd;
-    const {POINT_SHAPE, POINT_IMAGE} = LAYER.basicSettings;
+    const POINT_IMAGE = LAYER.basicSettings;
     const POINT_COLOR = "#000000"
     callQueryService(LAYER).then(async (GEOJSONFeatures) => {
       if (!GEOJSONFeatures)
@@ -34,7 +42,6 @@ class MapClickComponent extends React.Component {
       await drawFeatures(GEOJSONFeatures, {
         vectorLayerOptions: { clear: false },
         styleOptions: {
-          isFile: POINT_SHAPE === "img",
           color: POINT_COLOR,
           iconSrc: POINT_IMAGE,
         },
@@ -59,7 +66,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    showMapClickResult: (props, onAdd,onRemove) => dispatch(actionsRegistry.getActionCreator('showComponent', 'test-plugin', 'MapClickResult', props, onAdd,onRemove)),
+    showMapClickResult: (props, onAdd,onRemove) => dispatch(actionsRegistry.getActionCreator('showComponent', 'test-plugin', 'MapClickResult', props, onAdd, onRemove)),
     removeComponent: (id) => dispatch(actionsRegistry.getActionCreator('removeComponent', id)),
     notify: (message, type) => dispatch(systemAddNotification({ message, type })),
     setFeatures: (features) => dispatch(setFeatures(features)),

@@ -31,6 +31,8 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
+        "@penta-b/grid": "^1.0.39",
+        "@penta-b/mna-penta-smart-forms": "^2.1.449",
         "react": "^16.8.1",
         "react-dom": "^16.8.1",
         "react-redux": "^7.1.1",
